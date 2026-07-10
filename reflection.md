@@ -1,6 +1,9 @@
 # PawPal+ Project Reflection
 
 ## 1. System Design
+1. User enters basic owner + pet info
+2. User add/edit tasks (duration + priority at minimum)
+3. Generate a daily schedule/plan based on constraints and priorities
 
 **a. Initial design**
 
