@@ -8,12 +8,23 @@
 **a. Initial design**
 
 - Briefly describe your initial UML design.
+    - Created 4 classes. Owner, Pet, Task, Scheduler.
+    - Owner has 1 --> many pets
+    - Pet has 1 --> many Tasks
+    - Owner uses Scheduler that schedules the pool of Tasks.
+
 - What classes did you include, and what responsibilities did you assign to each?
+    1. Owner: stores user info and constrains; owns pets
+    2. Pet: represents an animal and holds a list of care tasks
+    3. Task: a single activity that contains priority and duration score and whether theres enough time.
+    4. Scheduler: an engine that sorts, filters, and schedules tasks into a daily plan and explains its choices.
 
 **b. Design changes**
 
 - Did your design change during implementation?
+    - Yes my design changed
 - If yes, describe at least one change and why you made it.
+    1. added a Plan/ScheduleEntry output because returning a list couldn;t hold when each task runs.
 
 ---
 
