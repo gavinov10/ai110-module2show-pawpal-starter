@@ -38,7 +38,18 @@
 **b. Tradeoffs**
 
 - Describe one tradeoff your scheduler makes.
+    - `generate_plan()` schedules tasks back-to-back from a single start time in
+      priority order, rather than honoring each task's preferred `time`. Conflict
+      detection is handled separately (`detect_conflicts()` only *warns* about
+      overlapping preferred times — it does not resolve them by shifting or
+      dropping a task).
 - Why is that tradeoff reasonable for this scenario?
+    - A busy pet owner mainly needs a realistic, prioritized to-do order that fits
+      the time they have that day. Packing tasks sequentially guarantees no two
+      tasks are booked at once and keeps the algorithm simple and predictable.
+      Surfacing conflicts as non-fatal warnings (instead of auto-rearranging)
+      keeps the owner in control and avoids the program crashing or making a
+      confusing "smart" decision on their behalf.
 
 ---
 

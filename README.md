@@ -82,14 +82,23 @@ Sample test output:
 
 ## 📐 Smarter Scheduling
 
-> Fill in once you've implemented scheduling logic.
+PawPal+ adds several layers of scheduling intelligence on top of the core
+classes. Each feature and the method that implements it:
 
 | Feature | Method(s) | Notes |
 |---------|-----------|-------|
-| Task sorting | | e.g., by priority, duration |
-| Filtering | | e.g., skip tasks if time runs out |
-| Conflict handling | | e.g., overlapping time slots |
-| Recurring tasks | | e.g., daily vs. weekly |
+| Task sorting (priority) | `Scheduler.sort_tasks()` | High priority first, then shorter duration. |
+| Task sorting (time) | `Scheduler.sort_by_time()` | Chronological by `"HH:MM"` time; timeless tasks go last. |
+| Filtering by status | `Scheduler.filter_by_status()` | Show only complete or only incomplete tasks. |
+| Filtering by pet | `Owner.tasks_for_pet()` | Return just one pet's tasks by name. |
+| Budget filtering | `Scheduler.filter_tasks()` | Greedily keep tasks that fit the available minutes. |
+| Conflict detection | `Scheduler.detect_conflicts()` | Returns non-fatal warning strings for overlapping time slots. |
+| Conflict resolution | `Scheduler.resolve_conflicts()` | Shifts overlapping tasks to the next free slot (nothing dropped). |
+| Recurring tasks | `Task.next_occurrence()`, `Pet.complete_task()` | Completing a `daily`/`weekly` task auto-creates the next occurrence via `timedelta`. |
+| Plan generation | `Scheduler.generate_plan()`, `Scheduler.explain()` | Builds a timed daily plan and explains what was scheduled/skipped. |
+
+All of the above are exercised by the CLI demo in `main.py`
+(`python main.py`).
 
 ## 📸 Demo Walkthrough
 
