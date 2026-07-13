@@ -22,6 +22,19 @@ Your final app should:
 - Display the plan clearly (and ideally explain the reasoning)
 - Include tests for the most important scheduling behaviors
 
+## ✨ Features
+
+- **Priority sorting** — orders tasks high → low priority, breaking ties by shorter duration (`Scheduler.sort_tasks()`).
+- **Sorting by time** — arranges tasks chronologically by their `HH:MM` time, with timeless tasks last (`Scheduler.sort_by_time()`).
+- **Filtering by status** — show only completed or only incomplete tasks (`Scheduler.filter_by_status()`).
+- **Filtering by pet** — pull just one pet's tasks by name (`Owner.tasks_for_pet()`).
+- **Time-budget planning** — greedily fills the owner's available minutes with the highest-priority tasks and reports what was skipped (`Scheduler.filter_tasks()` + `generate_plan()`).
+- **Conflict warnings** — detects overlapping time slots and returns non-fatal warning messages instead of crashing (`Scheduler.detect_conflicts()`).
+- **Conflict resolution** — automatically shifts overlapping tasks to the next free slot so nothing is dropped (`Scheduler.resolve_conflicts()`).
+- **Daily / weekly recurrence** — completing a recurring task auto-creates its next occurrence using `timedelta` (+1 day or +1 week) (`Task.next_occurrence()` + `Pet.complete_task()`).
+- **Explainable plans** — every generated schedule can explain which tasks were scheduled or skipped and why (`Scheduler.explain()`).
+- **Persistent Streamlit UI** — add pets/tasks, filter, mark complete, and generate schedules in the browser, with state kept across reruns via `st.session_state`.
+
 ## Getting started
 
 ### Setup
@@ -127,12 +140,75 @@ All of the above are exercised by the CLI demo in `main.py`
 
 ## 📸 Demo Walkthrough
 
-Describe your app in numbered steps so a reader can follow along without watching a video:
+### Main UI features (what a user can do)
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
+Run the app with `streamlit run app.py`. The page lets a user:
+
+- **Set the owner** and **add pets** (name + species) — each pet persists in the session.
+- **Add tasks** to a selected pet with a title, duration, priority, preferred **time** (`HH:MM`), and **frequency** (daily / weekly / once).
+- **Filter the task list** by status (All / Incomplete / Complete), displayed **sorted by time**.
+- **Mark a task complete** — recurring tasks automatically spawn their next occurrence.
+- **Generate a schedule** for the day, seeing conflict warnings, a suggested conflict-free timeline, the prioritized plan, and the reasoning behind it.
+
+### Example workflow
+
+1. Type an owner name (e.g. *Jordan*).
+2. Add a pet — *Mochi* the cat — and click **Add pet**; it appears in the pets table.
+3. Add a task: *Morning walk*, 30 min, high priority, `08:00`, daily → **Add task**.
+4. Add a second, overlapping task: *Feeding*, 10 min, high, `08:15`, daily.
+5. Set **Time available today** to 90 minutes and click **Generate schedule**.
+6. PawPal+ shows a ⚠️ **conflict warning** (walk vs. feeding), a **resolved timeline** that shifts Feeding to 08:30, and **Today's Schedule** ordered by priority within the budget.
+7. Back in Tasks, pick *Morning walk* and click **Complete task** — it's marked done and the next day's walk is auto-created.
+
+### Key Scheduler behaviors shown
+
+- **Sorting** — tasks display in chronological order even when added out of order.
+- **Filtering** — the status toggle and per-pet views narrow the task list.
+- **Conflict warnings + resolution** — overlaps are flagged, then auto-shifted to free slots.
+- **Recurrence** — completing a daily/weekly task schedules the next occurrence.
+- **Explainable planning** — the plan reports scheduled vs. skipped tasks and the time used.
+
+### Sample CLI output (`python main.py`)
+
+```
+Tasks sorted by time
+========================================
+  08:00 — Morning walk (30 min)
+  08:15 — Feeding (10 min)
+  09:00 — Feeding (10 min)
+  17:00 — Enrichment puzzle (20 min)
+  18:00 — Grooming (25 min)
+
+Open (incomplete) tasks
+========================================
+  [ ] Enrichment puzzle (20 min) [priority: low]
+  [ ] Feeding (10 min) [priority: high]
+  [ ] Grooming (25 min) [priority: medium]
+  [ ] Feeding (10 min) [priority: high]
+
+Whiskers' tasks only
+========================================
+  [ ] Grooming (25 min) [priority: medium]
+  [ ] Feeding (10 min) [priority: high]
+
+Conflict check
+========================================
+  ⚠️ Conflict: 'Morning walk' (08:00, 30 min) overlaps 'Feeding' (08:15, 10 min)
+
+Resolved (conflict-free) timeline
+========================================
+  08:00 — Morning walk (30 min)
+  08:30 — Feeding (10 min)
+  09:00 — Feeding (10 min)
+  17:00 — Enrichment puzzle (20 min)
+  18:00 — Grooming (25 min)
+
+Today's Schedule
+========================================
+  08:00 — Feeding (10 min) [priority: high]
+  08:10 — Feeding (10 min) [priority: high]
+  08:20 — Morning walk (30 min) [priority: high]
+  08:50 — Grooming (25 min) [priority: medium]
+```
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or link to a demo video here -->

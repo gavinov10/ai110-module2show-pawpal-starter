@@ -1,0 +1,67 @@
+classDiagram
+    %% PawPal+ — FINAL architecture (matches pawpal_system.py)
+
+    class Task {
+        +str description
+        +int duration
+        +str priority
+        +str time
+        +str frequency
+        +bool completed
+        +date due_date
+        +str id
+        +priority_score() int
+        +fits_in(remaining_minutes int) bool
+        +mark_complete() None
+        +mark_incomplete() None
+        +next_occurrence() Task
+        +summary() str
+    }
+
+    class Pet {
+        +str name
+        +str species
+        +str breed
+        +int age
+        +list~Task~ tasks
+        +add_task(task Task) None
+        +edit_task(task_id str) Task
+        +remove_task(task_id str) bool
+        +complete_task(task_id str) Task
+        +get_tasks() list~Task~
+    }
+
+    class Owner {
+        +str name
+        +int available_minutes
+        +dict preferences
+        +list~Pet~ pets
+        +add_pet(pet Pet) None
+        +remove_pet(pet Pet) None
+        +set_availability(minutes int) None
+        +total_tasks() list~Task~
+        +tasks_for_pet(pet_name str) list~Task~
+    }
+
+    class Scheduler {
+        +int available_minutes
+        +str start_time
+        +list~Task~ tasks
+        +list scheduled
+        +list~Task~ skipped
+        +for_owner(owner Owner) Scheduler
+        +sort_tasks() list~Task~
+        +sort_by_time() list~Task~
+        +filter_by_status(completed bool) list~Task~
+        +filter_tasks() list~Task~
+        +detect_conflicts() list~str~
+        +resolve_conflicts() list
+        +generate_plan() list
+        +explain() str
+    }
+
+    Owner "1" --> "*" Pet : owns
+    Pet "1" --> "*" Task : has
+    Owner "1" ..> "1" Scheduler : builds via for_owner()
+    Scheduler "1" --> "*" Task : schedules
+    Pet ..> Task : complete_task() spawns next_occurrence()
