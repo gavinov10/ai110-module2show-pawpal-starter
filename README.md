@@ -66,19 +66,44 @@ Skipped 1 task(s) (not enough time):
 
 ## 🧪 Testing PawPal+
 
+Run the full test suite from the project root:
+
 ```bash
-# Run the full test suite:
-pytest
-
-# Run with coverage:
-pytest --cov
+python -m pytest
 ```
 
-Sample test output:
+**What the tests cover** (`tests/test_pawpal.py`):
+
+- **Task completion** — `mark_complete()` flips a task's status to done.
+- **Task addition** — adding a task to a `Pet` increases its task count.
+- **Sorting correctness** — `Scheduler.sort_by_time()` returns tasks in
+  chronological order even when added out of order.
+- **Recurrence logic** — completing a `daily` task auto-creates a new task
+  due the following day.
+- **Conflict detection** — `Scheduler.detect_conflicts()` flags two tasks
+  scheduled at the same time.
+
+Successful test run:
 
 ```
-# Paste your pytest output here
+============================= test session starts ==============================
+platform darwin -- Python 3.12.0, pytest-9.1.1, pluggy-1.6.0
+rootdir: .../ai110-module2show-pawpal-starter
+plugins: anyio-4.14.1
+collected 5 items
+
+tests/test_pawpal.py .....                                               [100%]
+
+============================== 5 passed in 0.00s ===============================
 ```
+
+**Confidence Level: ★★★★☆ (4/5)**
+
+All five tests pass and cover the core scheduling behaviors (sorting,
+recurrence, conflict detection) plus basic task management. Docking one star
+because some edge cases aren't yet tested — empty pets/zero-minute budgets,
+invalid time strings, and conflict *resolution* (`resolve_conflicts()`) — which
+would be the next tests to add for full confidence.
 
 ## 📐 Smarter Scheduling
 
